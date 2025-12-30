@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CHERRY TECNOLOGIC S.A.S</title>
+  <link rel="icon" href="CHERRY.ico" type="image/x-icon">
+  <style>
+    :root {
+      --accent: #ff4c4c;
+      --accent-2: #ff7f50;
+      --brand-blue: #2563eb;
+      --text: #0f1724;
+      --muted: #6b7280;
+      --bg: #faf7f0;
+      --card-bg: #fff;
+      --card-border: rgba(2,6,23,0.03);
+      --topbar-bg: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.92));
+      --footer-bg: #0b1220;
+      --footer-text: #fff;
+      --top-stripe-h: 6px;
+      --topbar-h: 64px;
+      --container-max: 1180px;
+    }
+
+    /* reset + tipo */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    a{ color:inherit; text-decoration:none; }
+
+    /* FRANJA SUPERIOR */
+    .top-stripe {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--top-stripe-h);
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      z-index: 1300;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      position: fixed;
+      top: calc(var(--top-stripe-h));
+      left: 0; right: 0;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid rgba(15,23,36,0.04);
+      z-index: 1200;
+      backdrop-filter: blur(4px);
+    }
+    .topbar .left { display:flex; align-items:center; gap:16px; }
+    .logo { height:40px; width:auto; object-fit:contain; cursor:pointer; border-radius:6px; }
+    .brand-title { font-weight:700; color:var(--text); font-size:1.05rem; letter-spacing:-0.02em; }
+
+    /* NAV */
+    nav.topnav { display:flex; gap:18px; align-items:center; }
+    nav.topnav ul { display:flex; gap:12px; padding:0; margin:0; list-style:none; align-items:center; }
+    nav.topnav a { display:inline-block; padding:10px 12px; color:var(--text); text-decoration:none; font-weight:600; border-radius:8px; transition:background .14s, color .14s; font-size:.98rem; }
+    nav.topnav a:hover, nav.topnav a:focus { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color: #fff; }
+
+    .menu-toggle { display:none; background:var(--accent); color:#fff; border:none; padding:9px 12px; font-size:16px; cursor:pointer; border-radius:8px; }
+
+    /* Quick icons */
+    .topbar .socials { display:flex; gap:10px; align-items:center; }
+    .icon-link{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; background:var(--card-bg); border:1px solid var(--card-border); cursor:pointer; color:var(--muted); }
+    .icon-link svg{ width:18px; height:18px; }
+
+    /* tab manager (in-page tabs) */
+    .tab-area {
+      position: fixed;
+      top: calc(var(--top-stripe-h) + var(--topbar-h));
+      left: 0; right: 0;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: transparent;
+      z-index: 1190;
+    }
+    .tab-list { display:flex; gap:8px; align-items:center; }
+    .tab-btn {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; background:var(--card-bg); border:1px solid var(--card-border); cursor:pointer; color:var(--text); font-weight:700;
+    }
+    .tab-btn.active { box-shadow: 0 8px 20px rgba(2,6,23,0.08); transform:translateY(-2px); }
+    .tab-close { background:transparent; border:none; color:var(--muted); cursor:pointer; font-weight:700; }
+
+    /* SETTINGS modal/dropdown */
+    .settings-modal {
+      position: fixed;
+      top: calc(var(--topbar-h) + var(--top-stripe-h) + 10px);
+      right: 28px;
+      width: 300px;
+      max-width: calc(100% - 48px);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 18px 40px rgba(2,6,23,0.12);
+      padding: 14px;
+      z-index: 1350;
+      display: none;
+    }
+    .settings-modal.open { display:block; }
+    .settings-modal h3 { margin: 0 0 10px 0; font-size:1rem; color: var(--text); }
+    .settings-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-top:1px dashed rgba(0,0,0,0.03); }
+    .settings-row:first-of-type { border-top: none; padding-top:0; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:600;
+      background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff;
+    }
+    .segmented { display:flex; gap:8px; }
+    .segmented button{ padding:8px 10px; border-radius:8px; border:1px solid var(--card-border); background:transparent; color:var(--text); cursor:pointer; font-weight:700; }
+    .segmented button.active { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; border: none; }
+
+    /* Add product modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2,6,23,0.35); display:none; align-items:center; justify-content:center; z-index:1400; }
+    .modal { background: var(--card-bg); border-radius:12px; padding:18px; width: 720px; max-width: calc(100% - 40px); box-shadow: 0 18px 40px rgba(2,6,23,0.12); border: 1px solid var(--card-border); }
+    .modal h3 { margin:0 0 12px 0; }
+    .modal .row { display:flex; gap:12px; margin-bottom:12px; }
+    .modal label { display:block; font-weight:700; margin-bottom:6px; color:var(--text); }
+    .modal input[type="text"], .modal input[type="number"], .modal textarea, .modal select { width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--card-border); background:var(--card-bg); color:var(--text); }
+    .modal textarea { min-height:80px; resize:vertical; }
+    .modal .img-preview { width:120px; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--card-border); background:#f5f5f5; display:block; }
+    .modal .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+
+    /* FABs */
+    .fab-container{ position:fixed; right:20px; bottom:20px; display:flex; flex-direction:column; gap:12px; z-index:1400; }
+    .fab{ width:56px; height:56px; border-radius:16px; display:inline-flex; align-items:center; justify-content:center; color:#fff; box-shadow:0 8px 24px rgba(2,6,23,0.12); border:none; cursor:pointer; }
+    .fab.add{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); font-weight:700; }
+    .fab.whatsapp{ background:#25D366; } .fab.facebook{ background:#1877F2; } .fab.ai{ background:linear-gradient(135deg,#7b61ff,#b06cff); }
+
+    /* MAIN LAYOUT */
+    .main-content { margin: calc(var(--topbar-h) + var(--top-stripe-h) + 44px) auto 80px; padding: 40px 28px; max-width: var(--container-max); width:100%; transition:padding .2s ease; background: transparent; }
+
+    /* HERO */
+    .hero { display:flex; gap:40px; align-items:flex-start; padding: 20px 0 40px; background:transparent; color:var(--text); }
+    .hero .hero-left { flex:1 1 56%; max-width: 720px; }
+    .hero h1 { margin: 0 0 18px 0; font-weight: 700; color: var(--text); font-size: clamp(2.2rem, 6.2vw, 4.6rem); line-height: 1.02; letter-spacing: -0.02em; }
+    .hero p.lead { margin: 0 0 20px 0; color: var(--muted); font-size: 1.125rem; line-height: 1.6; max-width: 66ch; font-weight: 400; }
+    .hero .cta { display:inline-flex; align-items:center; gap:10px; background: var(--brand-blue); color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: 700; box-shadow: 0 8px 20px rgba(37,99,235,0.18); border: 0; text-decoration:none; }
+
+    .hero .hero-right { flex:1 1 40%; display:flex; justify-content:flex-end; align-items:center; }
+    .hero .hero-right .hero-image { width: 360px; max-width: 46vw; border-radius:10px; overflow:hidden; box-shadow:0 20px 40px rgba(2,6,23,0.06); background:var(--card-bg); border:1px solid var(--card-border); }
+
+    /* Sections neutral, spacing generous */
+    .content-section { padding: 36px 0; background: transparent; box-shadow:none; border-radius:0; }
+    .color-seccion { padding: 28px 0; }
+    .section-desc { margin: 14px 0 22px; color: var(--muted); background: transparent; padding: 0; font-size:1rem; line-height:1.6; }
+
+    /* Cards / grids */
+    .results-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin-top:14px; }
+    .card { background:var(--card-bg); border-radius:12px; padding:18px; box-shadow: 0 6px 18px rgba(2,6,23,0.04); border:1px solid var(--card-border); cursor:pointer; transition:transform .12s, box-shadow .12s; color:var(--text); display:flex; gap:12px; align-items:flex-start; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.08); }
+    .card .thumb { width:86px; height:62px; border-radius:8px; background:#f5f5f5; object-fit:cover; border:1px solid var(--card-border); flex:0 0 86px; }
+    .card .meta { flex:1; }
+    .card h3 { margin:0 0 8px 0; font-size:1.05rem; font-weight:700; color:var(--text); }
+    .card p { margin:0; color:var(--muted); }
+    .price { font-weight:700; color:var(--brand-blue); margin-top:8px; display:block; }
+
+    .component-list { background:var(--card-bg); border-radius:10px; padding:10px; border:1px solid var(--card-border); color:var(--text); }
+
+    /* Footer */
+    footer { background: var(--footer-bg); color: var(--footer-text); padding:28px 18px; margin-top:60px; border-top: none; text-align:center; }
+
+    /* Utilities */
+    .muted-note { color:var(--muted); }
+
+    /* Responsive adjustments */
+    @media (max-width:1100px) {
+      .hero { flex-direction:column; gap:28px; }
+      .hero .hero-right { order: -1; justify-content:center; }
+      .hero .hero-image { width: 86%; max-width:460px; }
+      .main-content { padding:28px 20px; }
+      .tab-area { padding: 6px 12px; overflow:auto; }
+      .modal { width: 92%; }
+    }
+    @media (max-width:700px) {
+      .topbar { padding: 0 12px; }
+      nav.topnav { display:none; }
+      .brand-title { display:none; }
+      .hero h1 { font-size: clamp(1.6rem, 6.5vw, 2.6rem); }
+      .hero p.lead { font-size: 0.98rem; }
+      .hero .hero-image { width: 100%; box-shadow: none; border: none; }
+      .fab { width:48px; height:48px; border-radius:12px; }
+      .settings-modal { right:12px; left:12px; top:auto; bottom:80px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-stripe" aria-hidden="true"></div>
+
+  <header class="topbar" role="banner">
+    <div class="left" style="gap:12px">
+      <img src="CHERRY 1.jpeg" alt="" class="logo" id="logoBtn" tabindex="0" data-i18n="brandAlt">
+      <div class="brand-title" id="brandTitle" data-i18n="brandTitle">CHERRY TECNOLOGIC S.A.S</div>
+    </div>
+
+    <nav class="topnav" role="navigation" aria-label="Menú principal">
+      <ul>
+        <li><a href="#inicio" data-hash="inicio" class="nav-link" data-i18n="navInicio">Inicio</a></li>
+        <li><a href="#comp-electronicos" data-hash="comp-electronicos" class="nav-link" data-i18n="navComponentes">Componentes</a></li>
+        <li><a href="#items-estrellas" data-hash="items-estrellas" class="nav-link" data-i18n="navItems">Ítems</a></li>
+        <li><a href="#tutoriales" data-hash="tutoriales" class="nav-link" data-i18n="navTutoriales">Tutoriales</a></li>
+        <li><a href="#quienes-somos" data-hash="quienes-somos" class="nav-link" data-i18n="navQuienes">Quiénes somos</a></li>
+      </ul>
+    </nav>
+
+    <div class="socials" aria-hidden="false">
+      <a id="topWhatsappLink" class="icon-link" aria-label="" target="_blank" rel="noopener noreferrer" href="#" title="" data-i18n="whatsappTitle">
+        <svg viewBox="0 0 24 24" fill="none"><path fill="#25D366" d="M20.52 3.48A11.9 11.9 0 0012 0C5.373 0 .001 5.373 0 12.002a11.9 11.9 0 001.726 6.004L0 24l6.148-1.617A11.9 11.9 0 0012 24c6.627 0 12-5.373 12-11.998 0-3.199-1.243-6.203-3.48-8.522zM12 21.8c-1.1 0-2.156-.292-3.09-.84l-.22-.13-3.655.962.98-3.56-.14-.23A8.014 8.014 0 014 12.002c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8zm4.61-5.51c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.19-.71-.62-1.19-1.38-1.33-1.62-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3-.22.24-.86.84-.86 2.06 0 1.22.88 2.4 1 2.57.12.18 1.72 2.6 4.17 3.64 2.45 1.03 2.45.69 2.89.65.44-.04 1.42-.57 1.62-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>
+      </a>
+
+      <a id="topFacebookLink" class="icon-link" aria-label="" target="_blank" rel="noopener noreferrer" href="#" title="" data-i18n="facebookTitle">
+        <svg viewBox="0 0 24 24" fill="none"><path fill="#1877F2" d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07c0 4.99 3.66 9.13 8.44 9.91v-7.02H8.08v-2.9h2.36V9.41c0-2.33 1.38-3.62 3.5-3.62.99 0 2.03.18 2.03.18v2.24h-1.14c-1.13 0-1.48.7-1.48 1.42v1.7h2.52l-.4 2.9h-2.12v7.01C18.34 21.2 22 17.06 22 12.07z"/></svg>
+      </a>
+
+      <button id="settingsBtn" class="icon-link" aria-haspopup="true" aria-expanded="false" title="Ajustes" style="border:none;" data-i18n="settingsTitle">
+        <svg viewBox="0 0 24 24" fill="none"><path fill="#6b7280" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7zm7.43-3.5c0-.42-.03-.84-.08-1.25l1.85-1.45-2.5-4.33-2.18.88a7.94 7.94 0 00-1.82-1.05L13.5 2h-3l-.2 3.3a7.94 7.94 0 00-1.82 1.05l-2.18-.88-2.5 4.33L4.65 10.75c-.05.41-.08.83-.08 1.25s.03.84.08 1.25L2.8 14.7l2.5 4.33 2.18-.88c.56.44 1.19.8 1.82 1.05L10.5 22h3l.2-3.3c.63-.25 1.26-.6 1.82-1.05l2.18.88 2.5-4.33-1.85-1.45c.05-.41.08-.83.08-1.25z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- tab area -->
+  <div class="tab-area" aria-hidden="false">
+    <div class="tab-list" id="tabList" role="tablist" aria-label="Pestañas abiertas"></div>
+  </div>
+
+  <!-- SETTINGS modal content -->
+  <div id="settingsModal" class="settings-modal" role="dialog" aria-modal="false" aria-labelledby="settingsTitle">
+    <h3 id="settingsTitle" data-i18n="settingsTitle">Ajustes</h3>
+
+    <div class="settings-row" id="langRow">
+      <div>
+        <div style="font-weight:700;" data-i18n="labelIdioma">Idioma</div>
+        <div class="muted-note" style="font-size:.9em;" data-i18n="noteIdioma">Cambiar el idioma de la interfaz</div>
+      </div>
+      <div class="segmented" role="tablist" aria-label="Seleccionar idioma">
+        <button data-lang="es" class="lang-btn">ES</button>
+        <button data-lang="en" class="lang-btn">EN</button>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+      <button id="closeSettings" class="btn" style="background:transparent; color:var(--brand-blue); border:1px solid var(--card-border);" data-i18n="closeBtn">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Add product modal/backdrop -->
+  <div id="addBackdrop" class="modal-backdrop" role="dialog" aria-hidden="true" aria-modal="true">
+    <div class="modal" role="document" aria-labelledby="addTitle">
+      <h3 id="addTitle" data-i18n="addTitle">Agregar producto / tutorial</h3>
+
+      <div class="row">
+        <div style="flex:1">
+          <label for="addSection" data-i18n="labelSection">Sección</label>
+          <select id="addSection">
+            <option value="components" selected data-i18n="optComponents">Componentes</option>
+            <option value="stars" data-i18n="optStars">Ítems estrellas</option>
+            <option value="tutorials" data-i18n="optTutorials">Tutoriales</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label for="addPrice" data-i18n="labelPrice">Precio</label>
+          <input id="addPrice" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <div class="row">
+        <div style="flex:1">
+          <label for="addName" data-i18n="labelName">Nombre</label>
+          <input id="addName" type="text" placeholder="">
+        </div>
+        <div style="flex:1">
+          <label for="addTags" data-i18n="labelTags">Etiquetas (separadas por coma)</label>
+          <input id="addTags" type="text" placeholder="led, sensor, arduino">
+        </div>
+      </div>
+
+      <div>
+        <label for="addDesc" data-i18n="labelDesc">Descripción / Extracto</label>
+        <textarea id="addDesc" placeholder=""></textarea>
+      </div>
+
+      <div class="row" style="align-items:center;">
+        <div style="flex:1">
+          <label for="addImageFile" data-i18n="labelImage">Imagen (archivo o URL)</label>
+          <input id="addImageFile" type="file" accept="image/*">
+          <input id="addImageURL" type="text" placeholder="https://..." style="margin-top:8px;">
+        </div>
+        <div style="width:140px; text-align:center;">
+          <label data-i18n="previewLabel">Previsualización</label>
+          <img id="addPreview" class="img-preview" src="" alt="">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="cancelAdd" class="btn" style="background:transparent; color:var(--brand-blue); border:1px solid var(--card-border);" data-i18n="cancelBtn">Cancelar</button>
+        <button id="submitAdd" class="btn" data-i18n="saveBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating action buttons -->
+  <div class="fab-container" aria-hidden="false">
+    <button id="openAddFab" class="fab add" title="Agregar" aria-label="Agregar">＋</button>
+    <a id="fabWhatsappLink" class="fab whatsapp" aria-label="" target="_blank" rel="noopener noreferrer" href="#" title="" data-i18n="whatsappTitle"><svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;"><path fill="#fff" d="M20.52 3.48A11.9 11.9 0 0012 0C5.373 0 .001 5.373 0 12.002a11.9 11.9 0 001.726 6.004L0 24l6.148-1.617A11.9 11.9 0 0012 24c6.627 0 12-5.373 12-11.998 0-3.199-1.243-6.203-3.48-8.522zM12 21.8c-1.1 0-2.156-.292-3.09-.84l-.22-.13-3.655.962.98-3.56-.14-.23A8.014 8.014 0 014 12.002c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8zm4.61-5.51c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.19-.71-.62-1.19-1.38-1.33-1.62-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3-.22.24-.86.84-.86 2.06 0 1.22.88 2.4 1 2.57.12.18 1.72 2.6 4.17 3.64 2.45 1.03 2.45.69 2.89.65.44-.04 1.42-.57 1.62-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a>
+
+    <a id="fabFacebookLink" class="fab facebook" aria-label="" target="_blank" rel="noopener noreferrer" href="#" title="" data-i18n="facebookTitle"><svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;"><path fill="#fff" d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07c0 4.99 3.66 9.13 8.44 9.91v-7.02H8.08v-2.9h2.36V9.41c0-2.33 1.38-3.62 3.5-3.62.99 0 2.03.18 2.03.18v2.24h-1.14c-1.13 0-1.48.7-1.48 1.42v1.7h2.52l-.4 2.9h-2.12v7.01C18.34 21.2 22 17.06 22 12.07z"/></svg></a>
+  </div>
+
+  <main class="main-content" id="mainContent" tabindex="-1">
+    <!-- INICIO -->
+    <section class="hero content-section active" id="inicio" tabindex="-1" aria-labelledby="h-inicio">
+      <div class="hero-left">
+        <h1 id="h-inicio"><span data-i18n="welcome">Bienvenido a</span> <span id="brandHighlight" style="color:var(--accent);">CHERRY TECNOLOGIC S.A.S</span></h1>
+        <p class="lead" id="leadText" data-i18n="leadText">Somos una empresa joven basada en la electrónica. Nuestro propósito es lograr un ambiente sano y limpio con ayuda de la tecnología. Usa el menú para navegar.</p>
+        <a href="#comp-electronicos" class="cta nav-link" data-hash="comp-electronicos" data-i18n="ctaSeeComponents">Ver componentes</a>
+      </div>
+      <div class="hero-right">
+        <div class="hero-image" aria-hidden="true">
+          <img src="ELECTRONICA.jpg" alt="" width="450" height="220" style="display:block; width:100%; height:auto;" data-i18n="heroImageAlt"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPONENTES -->
+    <section class="content-section color-seccion" id="comp-electronicos" tabindex="-1" aria-labelledby="h-comp">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 id="h-comp" data-i18n="hComp">Componentes electrónicos</h2>
+          <p class="section-desc" id="compDesc" data-i18n="compDesc">Listado de componentes disponibles</p>
+        </div>
+        <div>
+          <button class="btn" id="addCompBtn" data-target="components">＋ <span data-i18n="addItem">Añadir</span></button>
+        </div>
+      </div>
+
+      <div class="search-bar" aria-hidden="false" style="display:flex; gap:6px; margin-top:6px;">
+        <input id="compSearch" class="search-input" type="search" placeholder="" aria-label="Buscar componentes" data-i18n-placeholder="searchCompPlaceholder" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--card-border); background:var(--card-bg); color:var(--text);">
+        <button id="compClear" class="search-clear" type="button" aria-label="" data-i18n="clearBtn" style="padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:transparent; cursor:pointer;">✕</button>
+      </div>
+
+      <div id="compResults" class="results-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- ITEMS ESTRELLAS -->
+    <section class="content-section color-seccion" id="items-estrellas" tabindex="-1" aria-labelledby="h-items">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 id="h-items" data-i18n="hItems">Ítems estrellas</h2>
+          <p class="section-desc" id="itemsDesc" data-i18n="itemsDesc">Nuestros productos más destacados: módulos de aprendizaje, kits para principiantes y equipos seleccionados por su relación calidad-precio.</p>
+        </div>
+        <div>
+          <button class="btn" id="addStarsBtn" data-target="stars">＋ <span data-i18n="addItem">Añadir</span></button>
+        </div>
+      </div>
+
+      <div class="results-grid" id="starItems"></div>
+    </section>
+
+    <!-- TUTORIALES -->
+    <section class="content-section color-seccion" id="tutoriales" tabindex="-1" aria-labelledby="h-tut">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 id="h-tut" data-i18n="hTut">Tutoriales</h2>
+          <p class="section-desc" data-i18n="tutDesc">Tutoriales para aprender. Usa el buscador para filtrar por tema o por nombre del tutorial.</p>
+        </div>
+        <div>
+          <button class="btn" id="addTutBtn" data-target="tutorials">＋ <span data-i18n="addItem">Añadir</span></button>
+        </div>
+      </div>
+
+      <div class="search-bar" style="display:flex; gap:6px; margin-top:6px;">
+        <input id="tutorialSearch" class="search-input" type="search" placeholder="" aria-label="Buscar tutoriales" data-i18n-placeholder="searchTutPlaceholder" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--card-border); background:var(--card-bg); color:var(--text);">
+        <button id="tutorialClear" class="search-clear" type="button" aria-label="" data-i18n="clearBtn">✕</button>
+      </div>
+
+      <div id="tutorialList" class="results-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- QUIENES SOMOS -->
+    <section class="content-section color-seccion" id="quienes-somos" tabindex="-1" aria-labelledby="h-quienes">
+      <h2 id="h-quienes" data-i18n="hQuienes">¿Quiénes somos?</h2>
+      <p id="aboutText" data-i18n="aboutText">En noviembre de 2025 nace <strong>CHERRY TECNOLOGIC S.A.S</strong>, fruto de la idea innovadora de un grupo de universitarios con grandes sueños de transformar el mundo. Nuestra misión surge del compromiso de enfrentar los fenómenos naturales intensos mediante la tecnología, desarrollando productos basados en electrónica, sistemas y automatización.</p>
+      <p><b data-i18n="misionLabel">Misión:</b> <span data-i18n="misionText">Ofrecer soluciones accesibles que permitan a cada usuario transformar su entorno en algo más cómodo.</span></p>
+      <p><b data-i18n="visionLabel">Visión:</b> <span data-i18n="visionText">Ser la marca líder en tecnología para volver el mundo en un hogar más limpio y mejor.</span></p>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n="footerText">&copy; 2025 CHERRY TECNOLOGIC S.A.S — Todos los derechos reservados<br>
+      <span style="font-size:.9em; font-weight:400;" data-i18n="devBy">desarrollado por Emerson Stip Asprilla Angulo</span>
+    </p>
+  </footer>
+
+  <script>
+  (function(){
+    // CONFIG
+    const WHATSAPP_PHONE = "573044663738";
+    const WHATSAPP_MESSAGE_PLAIN = "Hola CHERRY TECNOLOGIC, quiero más información sobre sus productos.";
+    const FACEBOOK_URL = "https://www.facebook.com/share/19t3a9QiJE/";
+    const LS_LANG_KEY = 'cherry_lang_v1';
+    const LS_DATA_KEY = 'cherry_catalogs_v1';
+
+    function buildWhatsAppLink(phone, message) {
+      const cleaned = (phone || "").replace(/\D/g,''); if(!cleaned) return '#';
+      const encoded = encodeURIComponent(message || '');
+      return `https://wa.me/${cleaned}?text=${encoded}`;
+    }
+
+    // initial catalogs (structure supports image & price)
+    let componentsCatalog = [
+      { id: 'c1', name: 'LED rojo', tags: ['led','led rojo','leds'], desc: 'LED 5mm rojo, 2V.', price: 100, image: 'LED.jpeg' },
+      { id: 'c2', name: 'Resistor 10kΩ', tags: ['resistor','10k','resistencias'], desc: 'Resistencia de película - 10 kiloohmios.', price: 0.05, image: '10K.jpg' },
+      { id: 'c3', name: 'Capacitor 100µF', tags: ['capacitor','electrolítico'], desc: 'Condensador electrolítico 100 microfaradios.', price: 0.18, image: '' },
+      { id: 'c4', name: 'Batería 9V', tags: ['batería','9v','power'], desc: 'Fuente 9V para prototipos.', price: 3.50, image: '' },
+      { id: 'c5', name: 'Sensor de temperatura', tags: ['sensor','temperatura','dht11'], desc: 'Sensor digital de temperatura y humedad.', price: 4.99, image: '' },
+      { id: 'c6', name: 'Arduino Uno', tags: ['microcontrolador','atmega','arduino'], desc: 'Chip compatible con Arduino Uno.', price: 2.90, image: 'ARDUINO UNO.png' }
+    ];
+    let starCatalog = [
+      { id: 's1', name: 'Ventilador Térmico', desc: 'Se ajusta al ambiente; si el ambiente es frío proporciona calor y viceversa.', price: 129.99, tags: ['ventilador','termico'], image: '' },
+      { id: 's2', name: 'Contenedor De Rayos', desc: 'Atrae los relámpagos y los almacena para usar como energía controlada.', price: 899.00, tags: ['energia','rayos'], image: '' },
+      { id: 's3', name: 'Basurero Energético', desc: 'Convierte residuos en energía aprovechable para instalaciones locales.', price: 599.00, tags: ['residuos','energia'], image: '' }
+    ];
+    let tutorialsCatalog = [
+      { id: 't1', title: 'Introducción a Arduino', tags: ['arduino','microcontrolador','inicio'], excerpt: 'Aprende a programar tu primera placa Arduino y a subir tu primer sketch.', image: '' },
+      { id: 't2', title: 'Encender un LED', tags: ['led','básico','electronica'], excerpt: 'Tutorial paso a paso para encender un LED con una resistencia apropiada.', image: '' },
+      { id: 't3', title: 'Sensor de temperatura con DHT11', tags: ['sensor','dht11','temperatura'], excerpt: 'Leer temperatura y humedad y mostrar en pantalla.', image: '' }
+    ];
+
+    // Try to load saved catalogs from localStorage
+    function loadSavedCatalogs(){
+      try{
+        const raw = localStorage.getItem(LS_DATA_KEY);
+        if(!raw) return;
+        const parsed = JSON.parse(raw);
+        if(parsed.components) componentsCatalog = parsed.components;
+        if(parsed.stars) starCatalog = parsed.stars;
+        if(parsed.tutorials) tutorialsCatalog = parsed.tutorials;
+      }catch(e){
+        console.warn('No se pudieron cargar catálogos guardados', e);
+      }
+    }
+    function saveCatalogs(){
+      try{
+        localStorage.setItem(LS_DATA_KEY, JSON.stringify({
+          components: componentsCatalog,
+          stars: starCatalog,
+          tutorials: tutorialsCatalog
+        }));
+      }catch(e){
+        console.warn('No se pudieron guardar catálogos', e);
+      }
+    }
+
+    // i18n map (kept previous keys + form)
+    const i18n = {
+      es: {
+        brandAlt: "Logo CHERRY",
+        brandTitle: "CHERRY TECNOLOGIC S.A.S",
+        navInicio: "Inicio",
+        navComponentes: "Componentes",
+        navItems: "Ítems",
+        navTutoriales: "Tutoriales",
+        navQuienes: "Quiénes somos",
+        welcome: "Bienvenido a",
+        leadText: "Somos una empresa joven basada en la electrónica. Nuestro propósito es lograr un ambiente sano y limpio con ayuda de la tecnología. Usa el menú para navegar.",
+        ctaSeeComponents: "Ver componentes",
+        hComp: "Componentes electrónicos",
+        compDesc: "Listado de componentes disponibles",
+        searchCompPlaceholder: "Buscar componentes (ej: led, resistor, sensor)...",
+        searchTutPlaceholder: "Buscar tutoriales (ej: arduino, led, sensor)...",
+        clearBtn: "✕",
+        hItems: "Ítems estrellas",
+        itemsDesc: "Nuestros productos más destacados: módulos de aprendizaje, kits para principiantes y equipos seleccionados por su relación calidad-precio.",
+        hTut: "Tutoriales",
+        tutDesc: "Tutoriales para aprender. Usa el buscador para filtrar por tema o por nombre del tutorial.",
+        settingsTitle: "Ajustes",
+        labelIdioma: "Idioma",
+        noteIdioma: "Cambiar el idioma de la interfaz",
+        closeBtn: "Cerrar",
+        aboutText: "En noviembre de 2025 nace CHERRY TECNOLOGIC S.A.S, fruto de la idea innovadora de un grupo de universitarios con grandes sueños de transformar el mundo. Nuestra misión surge del compromiso de enfrentar los fenómenos naturales intensos mediante la tecnología, desarrollando productos basados en electrónica, sistemas y automatización.",
+        misionLabel: "Misión:",
+        misionText: "Ofrecer soluciones accesibles que permitan a cada usuario transformar su entorno en algo más cómodo.",
+        visionLabel: "Visión:",
+        visionText: "Ser la marca líder en tecnología para volver el mundo en un hogar más limpio y mejor.",
+        footerText: "© 2025 CHERRY TECNOLOGIC S.A.S — Todos los derechos reservados",
+        devBy: "desarrollado por Emerson Stip Asprilla Angulo",
+        noComponents: "No se encontraron componentes.",
+        noTutorials: "No se encontraron tutoriales.",
+        whatsappTitle: "Contactar por WhatsApp",
+        facebookTitle: "Ir a Facebook",
+        heroImageAlt: "Imagen representativa de electrónica",
+        star1: "Ventilador Térmico",
+        star1Desc: "Se ajusta al ambiente; si el ambiente es frío proporciona calor y viceversa.",
+        star2: "Contenedor De Rayos",
+        star2Desc: "Atrae los relámpagos y los almacena para usar como energía controlada.",
+        star3: "Basurero Energético",
+        star3Desc: "Convierte residuos en energía aprovechable para instalaciones locales.",
+        addTitle: "Agregar producto / tutorial",
+        labelSection: "Sección",
+        optComponents: "Componentes",
+        optStars: "Ítems estrellas",
+        optTutorials: "Tutoriales",
+        labelPrice: "Precio",
+        labelName: "Nombre",
+        labelTags: "Etiquetas (separadas por coma)",
+        labelDesc: "Descripción / Extracto",
+        labelImage: "Imagen (archivo o URL)",
+        previewLabel: "Previsualización",
+        cancelBtn: "Cancelar",
+        saveBtn: "Guardar",
+        addItem: "Añadir"
+      },
+      en: {
+        brandAlt: "CHERRY logo",
+        brandTitle: "CHERRY TECNOLOGIC S.A.S",
+        navInicio: "Home",
+        navComponentes: "Components",
+        navItems: "Featured",
+        navTutoriales: "Tutorials",
+        navQuienes: "About us",
+        welcome: "Welcome to",
+        leadText: "We are a young company focused on electronics. Our purpose is to achieve a clean and healthy environment using technology. Use the menu to navigate.",
+        ctaSeeComponents: "See components",
+        hComp: "Electronic components",
+        compDesc: "List of available components",
+        searchCompPlaceholder: "Search components (eg: led, resistor, sensor)...",
+        searchTutPlaceholder: "Search tutorials (eg: arduino, led, sensor)...",
+        clearBtn: "✕",
+        hItems: "Featured products",
+        itemsDesc: "Our top products: learning modules, beginner kits and selected equipment for value.",
+        hTut: "Tutorials",
+        tutDesc: "Tutorials to learn. Use the search to filter by topic or tutorial name.",
+        settingsTitle: "Settings",
+        labelIdioma: "Language",
+        noteIdioma: "Change interface language",
+        closeBtn: "Close",
+        aboutText: "In November 2025 CHERRY TECNOLOGIC S.A.S was born, the idea of a group of university students with big dreams to change the world. Our mission comes from the commitment to face intense natural phenomena using technology, developing products based on electronics, systems and automation.",
+        misionLabel: "Mission:",
+        misionText: "Provide accessible solutions that allow every user to transform their environment into something more comfortable.",
+        visionLabel: "Vision:",
+        visionText: "Become the leading brand in technology to make the world a cleaner, better home.",
+        footerText: "© 2025 CHERRY TECNOLOGIC S.A.S — All rights reserved",
+        devBy: "developed by Emerson Stip Asprilla Angulo",
+        noComponents: "No components found.",
+        noTutorials: "No tutorials found.",
+        whatsappTitle: "Contact via WhatsApp",
+        facebookTitle: "Go to Facebook",
+        heroImageAlt: "Representative electronics image",
+        star1: "Thermal Fan",
+        star1Desc: "Adjusts to the environment; if it's cold it provides heat and vice versa.",
+        star2: "Lightning Container",
+        star2Desc: "Attracts lightning and stores it to use as controlled energy.",
+        star3: "Energy Trash Bin",
+        star3Desc: "Converts waste into usable energy for local installations.",
+        addTitle: "Add product / tutorial",
+        labelSection: "Section",
+        optComponents: "Components",
+        optStars: "Featured",
+        optTutorials: "Tutorials",
+        labelPrice: "Price",
+        labelName: "Name",
+        labelTags: "Tags (comma separated)",
+        labelDesc: "Description / Excerpt",
+        labelImage: "Image (file or URL)",
+        previewLabel: "Preview",
+        cancelBtn: "Cancel",
+        saveBtn: "Save",
+        addItem: "Add"
+      }
+    };
+
+    // Helpers: language
+    function getLang(){
+      const stored = localStorage.getItem(LS_LANG_KEY);
+      return stored && i18n[stored] ? stored : 'es';
+    }
+
+    function applyLang(lang){
+      if(!i18n[lang]) lang = 'es';
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        if(!key || i18n[lang][key] === undefined) return;
+        const containsIcon = !!el.querySelector('svg') || !!el.querySelector('img') || el.children.length > 0;
+        if(containsIcon){
+          if(!el.getAttribute('aria-label') || el.getAttribute('aria-label').trim() === '') {
+            el.setAttribute('aria-label', i18n[lang][key]);
+          }
+          if(!el.getAttribute('title') || el.getAttribute('title').trim() === '') {
+            el.setAttribute('title', i18n[lang][key]);
+          }
+          if(el.tagName === 'IMG' && (!el.getAttribute('alt') || el.getAttribute('alt').trim() === '')) {
+            el.setAttribute('alt', i18n[lang][key]);
+          }
+        } else {
+          el.textContent = i18n[lang][key];
+        }
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+        const key = el.getAttribute('data-i18n-placeholder');
+        if(key && i18n[lang][key] !== undefined){
+          el.setAttribute('placeholder', i18n[lang][key]);
+        }
+      });
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      localStorage.setItem(LS_LANG_KEY, lang);
+      document.querySelectorAll('.pane-close').forEach(b => {
+        b.textContent = i18n[lang].closeBtn || 'Cerrar';
+      });
+    }
+
+    // Renderers
+    function renderComponents(list){
+      const el = document.getElementById('compResults'); if(!el) return;
+      el.innerHTML = '';
+      if(!Array.isArray(list) || list.length === 0){
+        const msg = document.createElement('div'); msg.style.gridColumn='1/-1'; msg.style.color='#333'; msg.style.background='#ffdede'; msg.style.padding='12px'; msg.style.borderRadius='6px';
+        msg.textContent = i18n[getLang()].noComponents;
+        el.appendChild(msg); return;
+      }
+      list.forEach(c=>{
+        const card = document.createElement('article'); card.className='card'; card.tabIndex=0; card.dataset.hash='comp-electronicos'; card.dataset.id=c.id;
+        const img = document.createElement('img'); img.className='thumb'; img.src = c.image || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="86" height="62"><rect width="100%" height="100%" fill="%23f5f5f5"/></svg>';
+        img.alt = c.name;
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const title = document.createElement('h3'); title.textContent = c.name;
+        const p = document.createElement('p'); p.textContent = c.desc;
+        meta.appendChild(title); meta.appendChild(p);
+        if(typeof c.price === 'number' && !isNaN(c.price)){
+          const pr = document.createElement('span'); pr.className='price'; pr.textContent = `$ ${Number(c.price).toFixed(2)}`;
+          meta.appendChild(pr);
+        }
+        const tags = document.createElement('small'); tags.style.color='var(--muted)'; tags.textContent = (c.tags||[]).join(', ');
+        meta.appendChild(tags);
+
+        card.appendChild(img); card.appendChild(meta);
+
+        card.addEventListener('click', ()=> openTabForSection('comp-electronicos', c.name, buildComponentDetail(c)));
+        card.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') card.click(); });
+
+        el.appendChild(card);
+      });
+    }
+
+    function renderStars(list){
+      const el = document.getElementById('starItems'); if(!el) return;
+      el.innerHTML = '';
+      if(!Array.isArray(list) || list.length === 0){
+        const msg = document.createElement('div'); msg.style.gridColumn='1/-1'; msg.style.color='#333'; msg.style.background='#ffdede'; msg.style.padding='12px'; msg.style.borderRadius='6px';
+        msg.textContent = i18n[getLang()].noComponents;
+        el.appendChild(msg); return;
+      }
+      list.forEach(s=>{
+        const card = document.createElement('article'); card.className='card'; card.tabIndex=0; card.dataset.hash='items-estrellas'; card.dataset.id=s.id;
+        const img = document.createElement('img'); img.className='thumb'; img.src = s.image || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="86" height="62"><rect width="100%" height="100%" fill="%23f5f5f5"/></svg>';
+        img.alt = s.name;
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const title = document.createElement('h3'); title.textContent = s.name;
+        const p = document.createElement('p'); p.textContent = s.desc;
+        meta.appendChild(title); meta.appendChild(p);
+        if(typeof s.price === 'number' && !isNaN(s.price)){
+          const pr = document.createElement('span'); pr.className='price'; pr.textContent = `$ ${Number(s.price).toFixed(2)}`;
+          meta.appendChild(pr);
+        }
+        card.appendChild(img); card.appendChild(meta);
+        // click: open detail
+        card.addEventListener('click', ()=> openTabForSection('items-estrellas', s.name, buildStarDetail(s)));
+        el.appendChild(card);
+      });
+    }
+
+    function renderTutorials(list){
+      const el = document.getElementById('tutorialList'); if(!el) return;
+      el.innerHTML = '';
+      if(!Array.isArray(list) || list.length === 0){
+        const msg = document.createElement('div'); msg.style.gridColumn='1/-1'; msg.style.color='#333'; msg.style.background='#ffdede'; msg.style.padding='12px'; msg.style.borderRadius='6px';
+        msg.textContent = i18n[getLang()].noTutorials;
+        el.appendChild(msg); return;
+      }
+      list.forEach(t=>{
+        const card = document.createElement('article'); card.className='card'; card.tabIndex=0; card.dataset.hash='tutoriales'; card.dataset.id=t.id;
+        const img = document.createElement('img'); img.className='thumb'; img.src = t.image || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="86" height="62"><rect width="100%" height="100%" fill="%23f5f5f5"/></svg>';
+        img.alt = t.title || t.name || '';
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const title = document.createElement('h3'); title.textContent = t.title || t.name;
+        const p = document.createElement('p'); p.textContent = t.excerpt || t.desc || '';
+        meta.appendChild(title); meta.appendChild(p);
+        card.appendChild(img); card.appendChild(meta);
+
+        card.addEventListener('click', ()=> openTabForSection('tutoriales', t.title || t.name, buildTutorialDetail(t)));
+        el.appendChild(card);
+      });
+    }
+
+    // detail builders
+    function buildComponentDetail(component){
+      const wrapper = document.createElement('div');
+      wrapper.style.padding = '18px';
+      const img = document.createElement('img'); img.src = component.image || ''; img.style.maxWidth='240px'; img.style.display='block'; img.style.marginBottom='12px';
+      const h = document.createElement('h2'); h.textContent = component.name;
+      const p = document.createElement('p'); p.textContent = component.desc;
+      const tags = document.createElement('p'); tags.style.color='var(--muted)'; tags.textContent = 'Tags: ' + (component.tags||[]).join(', ');
+      wrapper.appendChild(img); wrapper.appendChild(h); wrapper.appendChild(p); wrapper.appendChild(tags);
+      if(typeof component.price === 'number') {
+        const pr = document.createElement('p'); pr.className='price'; pr.textContent = `$ ${Number(component.price).toFixed(2)}`; wrapper.appendChild(pr);
+      }
+      return wrapper;
+    }
+    function buildStarDetail(item){
+      const wrapper = document.createElement('div');
+      wrapper.style.padding = '18px';
+      const img = document.createElement('img'); img.src = item.image || ''; img.style.maxWidth='320px'; img.style.display='block'; img.style.marginBottom='12px';
+      const h = document.createElement('h2'); h.textContent = item.name;
+      const p = document.createElement('p'); p.textContent = item.desc;
+      wrapper.appendChild(img); wrapper.appendChild(h); wrapper.appendChild(p);
+      if(typeof item.price === 'number') {
+        const pr = document.createElement('p'); pr.className='price'; pr.textContent = `$ ${Number(item.price).toFixed(2)}`; wrapper.appendChild(pr);
+      }
+      return wrapper;
+    }
+
+    // TAB MANAGER (kept from previous)
+    const tabListEl = () => document.getElementById('tabList');
+    function openTabForSection(hash, title, contentNode){
+      const existing = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.dataset.origin === title);
+      if(existing){
+        setActiveTab(existing.dataset.tabid);
+        return;
+      }
+      const tabId = `tab-${Math.random().toString(36).slice(2,9)}`;
+      const btn = document.createElement('button');
+      btn.className = 'tab-btn';
+      btn.setAttribute('role','tab');
+      btn.dataset.tabid = tabId;
+      btn.dataset.origin = title;
+      btn.innerHTML = `<span class="tab-title">${title}</span> <button class="tab-close" aria-label="Cerrar pestaña">×</button>`;
+      btn.addEventListener('click', function(e){
+        if(e.target.classList.contains('tab-close')) return;
+        setActiveTab(tabId);
+      });
+      btn.querySelector('.tab-close').addEventListener('click', function(e){
+        e.stopPropagation();
+        closeTab(tabId);
+      });
+      const pane = document.createElement('section');
+      pane.className = 'tab-pane';
+      pane.id = tabId;
+      pane.style.padding = '18px';
+      pane.style.background = 'var(--card-bg)';
+      pane.style.border = '1px solid var(--card-border)';
+      pane.style.position = 'fixed';
+      pane.style.left = '50%';
+      pane.style.top = 'calc(var(--topbar-h) + var(--top-stripe-h) + 50px)';
+      pane.style.transform = 'translateX(-50%)';
+      pane.style.maxWidth = '1100px';
+      pane.style.width = 'calc(100% - 48px)';
+      pane.style.height = 'calc(100% - 180px)';
+      pane.style.overflow = 'auto';
+      pane.style.zIndex = 1180;
+      const closeTop = document.createElement('button');
+      closeTop.textContent = i18n[getLang()].closeBtn || 'Cerrar';
+      closeTop.style.position = 'absolute';
+      closeTop.style.right = '12px';
+      closeTop.style.top = '12px';
+      closeTop.className = 'btn pane-close';
+      closeTop.addEventListener('click', ()=> closeTab(tabId));
+      pane.appendChild(closeTop);
+      pane.appendChild(contentNode);
+      tabListEl()?.appendChild(btn);
+      document.body.appendChild(pane);
+      btn.dataset.tabid = tabId;
+      pane.dataset.tabid = tabId;
+      setActiveTab(tabId);
+    }
+    function setActiveTab(tabId){
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tabid === tabId));
+      document.querySelectorAll('.tab-pane').forEach(p => p.style.display = (p.dataset.tabid === tabId) ? 'block' : 'none');
+    }
+    function closeTab(tabId){
+      const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.dataset.tabid === tabId);
+      const pane = document.querySelector(`.tab-pane[data-tabid="${tabId}"]`);
+      if(btn) btn.remove();
+      if(pane) pane.remove();
+      const last = document.querySelector('.tab-btn:last-child');
+      if(last) setActiveTab(last.dataset.tabid);
+    }
+
+    // Add product modal logic
+    function openAddModal(prefSection){
+      document.getElementById('addBackdrop').style.display = 'flex';
+      document.getElementById('addBackdrop').setAttribute('aria-hidden', 'false');
+      // set defaults
+      if(prefSection) document.getElementById('addSection').value = prefSection;
+      document.getElementById('addPrice').value = '';
+      document.getElementById('addName').value = '';
+      document.getElementById('addTags').value = '';
+      document.getElementById('addDesc').value = '';
+      document.getElementById('addImageFile').value = '';
+      document.getElementById('addImageURL').value = '';
+      document.getElementById('addPreview').src = '';
+      document.getElementById('addPreview').alt = '';
+      document.getElementById('addName').focus();
+    }
+    function closeAddModal(){
+      document.getElementById('addBackdrop').style.display = 'none';
+      document.getElementById('addBackdrop').setAttribute('aria-hidden', 'true');
+    }
+
+    function handleImageInput(fileInput, urlInput, previewEl){
+      const file = fileInput.files && fileInput.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          previewEl.src = e.target.result;
+          previewEl.alt = 'preview';
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+      const url = urlInput.value && urlInput.value.trim();
+      if(url){
+        previewEl.src = url;
+        previewEl.alt = 'preview';
+      } else {
+        previewEl.src = '';
+        previewEl.alt = '';
+      }
+    }
+
+    function createId(prefix){
+      return prefix + '-' + Date.now().toString(36).slice(2,8);
+    }
+
+    // add submit
+    function submitAdd(){
+      const section = document.getElementById('addSection').value;
+      const priceRaw = document.getElementById('addPrice').value;
+      const price = priceRaw === '' ? undefined : parseFloat(priceRaw);
+      const name = document.getElementById('addName').value.trim();
+      const tags = document.getElementById('addTags').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const desc = document.getElementById('addDesc').value.trim();
+      const fileInput = document.getElementById('addImageFile');
+      const urlInput = document.getElementById('addImageURL');
+      const preview = document.getElementById('addPreview');
+
+      // Basic validation
+      if(!name){
+        alert('El nombre es requerido.');
+        document.getElementById('addName').focus();
+        return;
+      }
+
+      // Determine image (if file chosen, read as dataURL synchronously handled earlier)
+      let imageSrc = '';
+      if(preview && preview.src) imageSrc = preview.src;
+
+      if(section === 'components'){
+        const item = {
+          id: createId('c'),
+          name,
+          desc,
+          tags,
+          price: typeof price === 'number' && !isNaN(price) ? price : 0,
+          image: imageSrc
+        };
+        componentsCatalog.unshift(item); // add to top
+        saveCatalogs();
+        renderComponents(componentsCatalog);
+      } else if(section === 'stars'){
+        const item = {
+          id: createId('s'),
+          name,
+          desc,
+          tags,
+          price: typeof price === 'number' && !isNaN(price) ? price : 0,
+          image: imageSrc
+        };
+        starCatalog.unshift(item);
+        saveCatalogs();
+        renderStars(starCatalog);
+      } else if(section === 'tutorials'){
+        const item = {
+          id: createId('t'),
+          title: name,
+          excerpt: desc,
+          tags,
+          image: imageSrc
+        };
+        tutorialsCatalog.unshift(item);
+        saveCatalogs();
+        renderTutorials(tutorialsCatalog);
+      }
+
+      closeAddModal();
+    }
+
+    // Init searches and UI (kept and integrated with new renderers)
+    function initSearches(){
+      const compSearchInput = document.getElementById('compSearch');
+      const compClearBtn = document.getElementById('compClear');
+      if(compSearchInput){
+        compSearchInput.addEventListener('input', function(e){
+          const q = (e.target.value || '').trim().toLowerCase();
+          if(!q) { renderComponents(componentsCatalog); return; }
+          const filtered = componentsCatalog.filter(c =>
+            (c.name && c.name.toLowerCase().includes(q)) ||
+            (c.tags && c.tags.some(t => t.includes(q))) ||
+            (c.desc && c.desc.toLowerCase().includes(q))
+          );
+          renderComponents(filtered);
+        });
+      }
+      if(compClearBtn){
+        compClearBtn.addEventListener('click', function(){
+          if(compSearchInput) { compSearchInput.value=''; renderComponents(componentsCatalog); compSearchInput.focus(); }
+        });
+      }
+
+      const tutorialSearchInput = document.getElementById('tutorialSearch');
+      const tutorialClearBtn = document.getElementById('tutorialClear');
+      if(tutorialSearchInput){
+        tutorialSearchInput.addEventListener('input', function(e){
+          const q = (e.target.value || '').trim().toLowerCase();
+          if(!q) { renderTutorials(tutorialsCatalog); return; }
+          const filtered = tutorialsCatalog.filter(t =>
+            (t.title && t.title.toLowerCase().includes(q)) ||
+            (t.tags && t.tags.some(tag => tag.includes(q))) ||
+            (t.excerpt && t.excerpt.toLowerCase().includes(q))
+          );
+          renderTutorials(filtered);
+        });
+      }
+      if(tutorialClearBtn){
+        tutorialClearBtn.addEventListener('click', function(){
+          if(tutorialSearchInput) { tutorialSearchInput.value=''; renderTutorials(tutorialsCatalog); tutorialSearchInput.focus(); }
+        });
+      }
+    }
+
+    // Initial DOMContentLoaded wiring
+    document.addEventListener('DOMContentLoaded', function(){
+      // load saved catalogs if any
+      loadSavedCatalogs();
+
+      // social links
+      document.getElementById('topWhatsappLink')?.setAttribute('href', buildWhatsAppLink(WHATSAPP_PHONE, WHATSAPP_MESSAGE_PLAIN));
+      document.getElementById('fabWhatsappLink')?.setAttribute('href', buildWhatsAppLink(WHATSAPP_PHONE, WHATSAPP_MESSAGE_PLAIN));
+      document.getElementById('topFacebookLink')?.setAttribute('href', FACEBOOK_URL);
+      document.getElementById('fabFacebookLink')?.setAttribute('href', FACEBOOK_URL);
+
+      // initial render
+      renderComponents(componentsCatalog);
+      renderStars(starCatalog);
+      renderTutorials(tutorialsCatalog);
+      initSearches();
+
+      // language
+      const savedLang = localStorage.getItem(LS_LANG_KEY) || 'es';
+      applyLang(savedLang);
+
+      // nav behaviour unchanged
+      document.querySelectorAll('.nav-link').forEach(a=>{
+        a.addEventListener('click', function(e){
+          e.preventDefault();
+          const hash = a.dataset.hash || a.getAttribute('href').replace('#','');
+          const section = document.getElementById(hash);
+          if(!section) return;
+          const clone = section.cloneNode(true);
+          clone.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+          const title = a.textContent.trim() || hash;
+          openTabForSection(hash, title, clone);
+        });
+      });
+
+      // logo opens inicio
+      document.getElementById('logoBtn')?.addEventListener('click', function(){
+        const section = document.getElementById('inicio');
+        if(!section) return;
+        const clone = section.cloneNode(true); clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+        openTabForSection('inicio', i18n[getLang()].navInicio || 'Inicio', clone);
+      });
+
+      // settings modal behaviour
+      const settingsBtn = document.getElementById('settingsBtn');
+      const settingsModal = document.getElementById('settingsModal');
+      const closeSettings = document.getElementById('closeSettings');
+      function closeModal(){ settingsModal.classList.remove('open'); settingsBtn.setAttribute('aria-expanded','false'); settingsModal.setAttribute('aria-modal','false'); }
+      function openModal(){ settingsModal.classList.add('open'); settingsBtn.setAttribute('aria-expanded','true'); settingsModal.setAttribute('aria-modal','true'); }
+      settingsBtn?.addEventListener('click', function(e){ e.stopPropagation(); if(settingsModal.classList.contains('open')) closeModal(); else openModal(); });
+      closeSettings?.addEventListener('click', closeModal);
+      document.addEventListener('click', function(e){ if(settingsModal.classList.contains('open')){ if(!settingsModal.contains(e.target) && e.target !== settingsBtn) closeModal(); }});
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+      // language buttons
+      document.querySelectorAll('.lang-btn').forEach(btn=> btn.addEventListener('click', function(){ applyLang(btn.dataset.lang || 'es'); }));
+
+      // accessibility: open settings with Enter/Space
+      settingsBtn.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); settingsModal.querySelector('.lang-btn')?.focus(); } });
+
+      // Add product triggers: top-right buttons and FAB
+      document.getElementById('addCompBtn')?.addEventListener('click', ()=> openAddModal('components'));
+      document.getElementById('addStarsBtn')?.addEventListener('click', ()=> openAddModal('stars'));
+      document.getElementById('addTutBtn')?.addEventListener('click', ()=> openAddModal('tutorials'));
+      document.getElementById('openAddFab')?.addEventListener('click', ()=> openAddModal());
+
+      // Modal controls
+      document.getElementById('cancelAdd')?.addEventListener('click', closeAddModal);
+      document.getElementById('addBackdrop')?.addEventListener('click', function(e){ if(e.target === this) closeAddModal(); });
+      document.getElementById('submitAdd')?.addEventListener('click', submitAdd);
+
+      // image preview handlers
+      const fileInput = document.getElementById('addImageFile');
+      const urlInput = document.getElementById('addImageURL');
+      const preview = document.getElementById('addPreview');
+      fileInput?.addEventListener('change', ()=> handleImageInput(fileInput, urlInput, preview));
+      urlInput?.addEventListener('input', ()=> handleImageInput(fileInput, urlInput, preview));
+
+      // ensure aria/title/alt set for icons
+      const cur = getLang();
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        if(key && i18n[cur][key] !== undefined){
+          if((!el.getAttribute('aria-label') || el.getAttribute('aria-label').trim() === '') && (el.querySelector('svg') || el.querySelector('img') || el.children.length > 0)) {
+            el.setAttribute('aria-label', i18n[cur][key]);
+          }
+          if((!el.getAttribute('title') || el.getAttribute('title').trim() === '') && (el.querySelector('svg') || el.querySelector('img') || el.children.length > 0)) {
+            el.setAttribute('title', i18n[cur][key]);
+          }
+          if(el.tagName === 'IMG' && (!el.getAttribute('alt') || el.getAttribute('alt').trim() === '')) {
+            el.setAttribute('alt', i18n[cur][key]);
+          }
+        }
+      });
+
+    }); // DOMContentLoaded
+  })();
+  </script>
+</body>
+</html>
